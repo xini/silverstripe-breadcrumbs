@@ -1,0 +1,6 @@
+---
+Name: breadcrumbs
+---
+SilverStripe\CMS\Model\SiteTree:
+  extensions:
+    - Innoweb\Breadcrumbs\Extensions\SiteTreeExtension

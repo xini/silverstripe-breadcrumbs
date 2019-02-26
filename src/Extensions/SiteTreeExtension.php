@@ -38,7 +38,7 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
             } else if ($showHidden || $page->ShowInMenus || ($page->ID === $this->owner->ID)) {
                 $pages[] = $page;
             }
-            if (!$page->ParentID && $page->ID !== $homePage->ID) {
+            if ($includeHome && !$page->ParentID && $page->ID !== $homePage->ID) {
                 $pages[] = $homePage;
             }
             $page = $page->ParentID ? $page->Parent() : false;

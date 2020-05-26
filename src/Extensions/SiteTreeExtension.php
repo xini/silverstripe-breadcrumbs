@@ -38,10 +38,20 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
             } else if ($showHidden || $page->ShowInMenus || ($page->ID === $this->owner->ID)) {
                 $pages[] = $page;
             }
-            if ($includeHome && !$page->ParentID && $page->ID !== $homePage->ID) {
-                $pages[] = $homePage;
+            if (ClassInfo::exists('Symbiote\Multisites\Multisites')) {
+                if ($includeHome && $page->ParentID == $page->SiteID && $page->ID !== $homePage->ID) {
+                    $pages[] = $homePage;
+                }
+                $page = $page->ParentID ? $page->Parent() : false;
+                if (is_a($page, 'Symbiote\Multisites\Model\Site')) {
+                    $page = false;
+                }
+            } else {
+                if ($includeHome && !$page->ParentID && $page->ID !== $homePage->ID) {
+                    $pages[] = $homePage;
+                }
+                $page = $page->ParentID ? $page->Parent() : false;
             }
-            $page = $page->ParentID ? $page->Parent() : false;
         }
 
         $list = CrumbsList::create();

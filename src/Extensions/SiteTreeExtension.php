@@ -24,7 +24,11 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
 
         if (ClassInfo::exists('Symbiote\Multisites\Control\MultisitesRootController')) {
             $homeLink = \Symbiote\Multisites\Control\MultisitesRootController::get_homepage_link();
-            $homePage = SiteTree::get_by_link($homeLink);
+            $homePage = SiteTree::get()->filter([
+                'SiteID' => $this->getOwner()->SiteID,
+                'ParentID' => $this->getOwner()->SiteID,
+                'URLSegment' => $homeLink
+            ])->first();
         } else {
             $homeLink = RootURLController::get_homepage_link();
             $homePage = SiteTree::get_by_link($homeLink);

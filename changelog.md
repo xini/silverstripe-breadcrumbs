@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.3]
 
 * fix home page retrieval for multisites
+* add hook to ContentController to provide per-request hook for amending breadcrumbs
 
 ## [1.0.2]
 

@@ -4,3 +4,6 @@ Name: breadcrumbs
 SilverStripe\CMS\Model\SiteTree:
   extensions:
     - Innoweb\Breadcrumbs\Extensions\SiteTreeExtension
+SilverStripe\CMS\Controllers\ContentController:
+  extensions:
+    - Innoweb\Breadcrumbs\Extensions\ContentControllerExtension

@@ -92,3 +92,4 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
         return $key;
     }
 }
+

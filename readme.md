@@ -5,7 +5,7 @@
 
 ## Overview
 
-Adds configurable and extendable breadcrumbs to the site.
+Adds configurable and extendable breadcrumbs to the site. Compatible with [Symbiote's Multisites](https://github.com/symbiote/silverstripe-multisites).
 
 ## Requirements
 
@@ -19,11 +19,28 @@ composer require innoweb/silverstripe-breadcrumbs dev-master
 ```
 Then run dev/build.
 
+## Configuration
+
+You can configure whether the home page and pages hidden from the sitetree should be inculded in the breadcrumbs:
+
+```
+Innoweb\Breadcrumbs\Extensions\SiteTreeExtension:
+  crumbs_include_home: false # default: true
+  crumbs_show_hidden: true # default: false
+```
+
+For a page type you can also disable the crumbs, e.g.:
+
+```
+Your\Project\LandingPage:
+  show_crumbs: false # default: true
+```
+
 ## Usage
 
 By default, the module uses the site tree to generate breadcrumbs.  
 
-In you templates, loop over `$CrumbList` to display the breadcrumbs. You cancopy the following code into your template:
+In your templates, loop over `$CrumbList` to display the breadcrumbs. You can copy the following code into your template:
 
 ```
 <% if $CrumbsList %>

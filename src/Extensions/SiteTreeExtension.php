@@ -11,8 +11,12 @@ use SilverStripe\Core\Config\Config;
 
 class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
 {
+    // global settings
     private static $crumbs_include_home = true;
     private static $crumbs_show_hidden = false;
+
+    // page settings
+    private static $show_crumbs = true;
 
     public function getCrumbsList()
     {
@@ -22,40 +26,44 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
         $includeHome = Config::inst()->get(SiteTreeExtension::class, 'crumbs_include_home');
         $showHidden = Config::inst()->get(SiteTreeExtension::class, 'crumbs_show_hidden');
 
-        if (ClassInfo::exists('Symbiote\Multisites\Control\MultisitesRootController')) {
-            $homeLink = \Symbiote\Multisites\Control\MultisitesRootController::get_homepage_link();
-            $homePage = SiteTree::get()->filter([
-                'SiteID' => $this->getOwner()->SiteID,
-                'ParentID' => $this->getOwner()->SiteID,
-                'URLSegment' => $homeLink
-            ])->first();
-        } else {
-            $homeLink = RootURLController::get_homepage_link();
-            $homePage = SiteTree::get_by_link($homeLink);
-        }
+        if ($page->config()->show_crumbs) {
 
-        while ($page) {
-            if ($page->ID === $homePage->ID) {
-                if ($includeHome) {
+            if (ClassInfo::exists('Symbiote\Multisites\Control\MultisitesRootController')) {
+                $homeLink = \Symbiote\Multisites\Control\MultisitesRootController::get_homepage_link();
+                $homePage = SiteTree::get()->filter([
+                    'SiteID' => $this->getOwner()->SiteID,
+                    'ParentID' => $this->getOwner()->SiteID,
+                    'URLSegment' => $homeLink
+                ])->first();
+            } else {
+                $homeLink = RootURLController::get_homepage_link();
+                $homePage = SiteTree::get_by_link($homeLink);
+            }
+
+            while ($page) {
+                if ($page->ID === $homePage->ID) {
+                    if ($includeHome) {
+                        $pages[] = $page;
+                    }
+                } else if ($showHidden || $page->ShowInMenus || ($page->ID === $this->owner->ID)) {
                     $pages[] = $page;
                 }
-            } else if ($showHidden || $page->ShowInMenus || ($page->ID === $this->owner->ID)) {
-                $pages[] = $page;
+                if (ClassInfo::exists('Symbiote\Multisites\Multisites')) {
+                    if ($includeHome && $page->ParentID == $page->SiteID && $page->ID !== $homePage->ID) {
+                        $pages[] = $homePage;
+                    }
+                    $page = $page->ParentID ? $page->Parent() : false;
+                    if (is_a($page, 'Symbiote\Multisites\Model\Site')) {
+                        $page = false;
+                    }
+                } else {
+                    if ($includeHome && !$page->ParentID && $page->ID !== $homePage->ID) {
+                        $pages[] = $homePage;
+                    }
+                    $page = $page->ParentID ? $page->Parent() : false;
+                }
             }
-            if (ClassInfo::exists('Symbiote\Multisites\Multisites')) {
-                if ($includeHome && $page->ParentID == $page->SiteID && $page->ID !== $homePage->ID) {
-                    $pages[] = $homePage;
-                }
-                $page = $page->ParentID ? $page->Parent() : false;
-                if (is_a($page, 'Symbiote\Multisites\Model\Site')) {
-                    $page = false;
-                }
-            } else {
-                if ($includeHome && !$page->ParentID && $page->ID !== $homePage->ID) {
-                    $pages[] = $homePage;
-                }
-                $page = $page->ParentID ? $page->Parent() : false;
-            }
+
         }
 
         $list = CrumbsList::create();

@@ -9,7 +9,11 @@ Adds configurable and extendable breadcrumbs to the site. Compatible with [Symbi
 
 ## Requirements
 
-SilverStripe CMS 4, see [composer.json](composer.json)
+SilverStripe CMS 5, see [composer.json](composer.json)
+
+Note: this version is compatible with Silverstripe 5. 
+For Silverstripe 4, please see the [1 release line](https://github.com/xini/silverstripe-breadcrumbs/tree/1).
+
 
 ## Installation
 
@@ -44,19 +48,19 @@ In your templates, loop over `$CrumbList` to display the breadcrumbs. You can co
 
 ```
 <% if $CrumbsList %>
-<nav aria-label="Breadcrumb" class="breadcrumbs">
-	<ol itemscope itemtype="http://schema.org/BreadcrumbList">
-		<% loop $CrumbsList %>
-			<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-				<% if not $First %>&gt;<% end_if %>
-	   			<a itemtype="http://schema.org/Thing" itemprop="item" href="$Link"<% if $Last %> aria-current="page"<% end_if %>>
-	   				<span itemprop="name">$Title</span>
-	   			</a>
-	   			<meta itemprop="position" content="$Pos" />
-	   		</li>
-	    <% end_loop %>
-	</ol>
-</nav>
+	<nav aria-label="Breadcrumb" class="breadcrumbs">
+		<ol itemscope itemtype="http://schema.org/BreadcrumbList">
+			<% loop $CrumbsList %>
+				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+					<% if not $IsFirst %>&gt;<% end_if %>
+					<a itemtype="http://schema.org/Thing" itemprop="item" href="$Link"<% if $IsLast %> aria-current="page"<% end_if %>>
+						<span itemprop="name">$Title</span>
+					</a>
+					<meta itemprop="position" content="$Pos" />
+				</li>
+			<% end_loop %>
+		</ol>
+	</nav>
 <% end_if %>
 ```
 

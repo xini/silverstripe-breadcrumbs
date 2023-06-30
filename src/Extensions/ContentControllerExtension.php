@@ -9,9 +9,7 @@ class ContentControllerExtension extends Extension
     public function CrumbsList()
     {
         $list = $this->getOwner()->data()->getCrumbsList();
-        if ($this->getOwner()->hasMethod('updateCrumbsList')) {
-            $list = $this->getOwner()->updateCrumbsList($list);
-        }
+        $this->getOwner()->invokeWithExtensions('updateCrumbsList', $list);
         return $list;
     }
 }

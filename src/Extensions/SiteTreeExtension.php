@@ -76,9 +76,8 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
             }
         }
 
-        if ($this->owner->hasMethod('updateCrumbsList')) {
-            $list = $this->owner->updateCrumbsList($list);
-        }
+        $this->getOwner()->invokeWithExtensions('updateCrumbsList', $list);
+
         return $list;
     }
 

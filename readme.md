@@ -5,7 +5,7 @@
 
 ## Overview
 
-Adds configurable and extendable breadcrumbs to the site. Compatible with [Symbiote's Multisites](https://github.com/symbiote/silverstripe-multisites).
+Adds configurable and extendable breadcrumbs to the site. Compatible with [Symbiote's Multisites](https://github.com/symbiote/silverstripe-multisites) and [Fromholdio's Configured Multisites fork](https://github.com/fromholdio/silverstripe-configured-multisites).
 
 ## Requirements
 

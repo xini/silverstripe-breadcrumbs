@@ -6,8 +6,8 @@ use Innoweb\Breadcrumbs\Model\Crumb;
 use Innoweb\Breadcrumbs\Model\CrumbsList;
 use SilverStripe\CMS\Controllers\RootURLController;
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Manifest\ModuleLoader;
 
 class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
 {
@@ -26,10 +26,11 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
         $includeHome = Config::inst()->get(SiteTreeExtension::class, 'crumbs_include_home');
         $showHidden = Config::inst()->get(SiteTreeExtension::class, 'crumbs_show_hidden');
 
-        if ($page->config()->show_crumbs) {
-
-            if (ClassInfo::exists('Symbiote\Multisites\Control\MultisitesRootController')) {
-                $homeLink = \Symbiote\Multisites\Control\MultisitesRootController::get_homepage_link();
+        if ($page->config()->show_crumbs)
+        {
+            $rootControllerClass = $this->getOwner()->getMultisitesRootControllerClassName();
+            if (!empty($rootControllerClass)) {
+                $homeLink = $rootControllerClass::get_homepage_link();
                 $homePage = SiteTree::get()->filter([
                     'SiteID' => $this->getOwner()->SiteID,
                     'ParentID' => $this->getOwner()->SiteID,
@@ -48,12 +49,13 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
                 } else if ($showHidden || $page->ShowInMenus || ($page->ID === $this->owner->ID)) {
                     $pages[] = $page;
                 }
-                if (ClassInfo::exists('Symbiote\Multisites\Multisites')) {
+                $siteClass = $this->getOwner()->getMultisitesSiteClassName();
+                if (!empty($siteClass)) {
                     if ($includeHome && $page->ParentID == $page->SiteID && $page->ID !== $homePage->ID) {
                         $pages[] = $homePage;
                     }
                     $page = $page->ParentID ? $page->Parent() : false;
-                    if (is_a($page, 'Symbiote\Multisites\Model\Site')) {
+                    if (is_a($page, $siteClass)) {
                         $page = false;
                     }
                 } else {
@@ -81,6 +83,30 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
         return $list;
     }
 
+    public function getMultisitesRootControllerClassName(): ?string
+    {
+        $manifest = ModuleLoader::inst()->getManifest();
+        if ($manifest->moduleExists('symbiote/silverstripe-multisites')) {
+            return \Symbiote\Multisites\Multisites::class;
+        }
+        if ($manifest->moduleExists('fromholdio/silverstripe-configured-multisites')) {
+            return \Fromholdio\ConfiguredMultisites\Multisites::class;
+        }
+        return null;
+    }
+
+    public function getMultisitesSiteClassName(): ?string
+    {
+        $manifest = ModuleLoader::inst()->getManifest();
+        if ($manifest->moduleExists('symbiote/silverstripe-multisites')) {
+            return \Symbiote\Multisites\Model\Site::class;
+        }
+        if ($manifest->moduleExists('fromholdio/silverstripe-configured-multisites')) {
+            return \Fromholdio\ConfiguredMultisites\Model\Site::class;
+        }
+        return null;
+    }
+
     public function CrumbsCacheKey()
     {
         $includeHome = Config::inst()->get(SiteTreeExtension::class, 'crumbs_include_home');
@@ -99,4 +125,3 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
         return $key;
     }
 }
-

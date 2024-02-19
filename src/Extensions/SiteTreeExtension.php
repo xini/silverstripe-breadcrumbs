@@ -87,10 +87,10 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
     {
         $manifest = ModuleLoader::inst()->getManifest();
         if ($manifest->moduleExists('symbiote/silverstripe-multisites')) {
-            return \Symbiote\Multisites\Multisites::class;
+            return \Symbiote\Multisites\Control\MultisitesRootController::class;
         }
         if ($manifest->moduleExists('fromholdio/silverstripe-configured-multisites')) {
-            return \Fromholdio\ConfiguredMultisites\Multisites::class;
+            return \Fromholdio\ConfiguredMultisites\Control\MultisitesRootController::class;
         }
         return null;
     }

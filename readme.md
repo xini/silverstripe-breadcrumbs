@@ -49,11 +49,11 @@ In your templates, loop over `$CrumbList` to display the breadcrumbs. You can co
 ```
 <% if $CrumbsList %>
 	<nav aria-label="Breadcrumb" class="breadcrumbs">
-		<ol itemscope itemtype="http://schema.org/BreadcrumbList">
+		<ol itemscope itemtype="https://schema.org/BreadcrumbList">
 			<% loop $CrumbsList %>
-				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+				<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
 					<% if not $IsFirst %>&gt;<% end_if %>
-					<a itemtype="http://schema.org/Thing" itemprop="item" href="$Link"<% if $IsLast %> aria-current="page"<% end_if %>>
+					<a itemtype="https://schema.org/Thing" itemprop="item" href="$Link"<% if $IsLast %> aria-current="page"<% end_if %>>
 						<span itemprop="name">$Title</span>
 					</a>
 					<meta itemprop="position" content="$Pos" />

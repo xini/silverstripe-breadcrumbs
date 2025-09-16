@@ -7,9 +7,10 @@ use Innoweb\Breadcrumbs\Model\CrumbsList;
 use SilverStripe\CMS\Controllers\RootURLController;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Extension;
 use SilverStripe\Core\Manifest\ModuleLoader;
 
-class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
+class SiteTreeExtension extends Extension
 {
     // global settings
     private static $crumbs_include_home = true;
@@ -73,7 +74,7 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
         if (count($pages)) {
             $pages = array_reverse($pages);
             foreach ($pages as $page) {
-                $crumb = Crumb::create($page);
+                $crumb = Crumb::factory($page);
                 $list->push($crumb);
             }
         }
@@ -111,7 +112,7 @@ class SiteTreeExtension extends \SilverStripe\CMS\Model\SiteTreeExtension
     {
         $includeHome = Config::inst()->get(SiteTreeExtension::class, 'crumbs_include_home');
         $showHidden = Config::inst()->get(SiteTreeExtension::class, 'crumbs_show_hidden');
-        $pageIDs = $this->owner->getAncestors(true)->map()->keys();
+        $pageIDs = $this->getOwner()->getAncestors(true)->map()->keys();
         $maxLastEdited = SiteTree::get()->filter('ID', $pageIDs)->max('LastEdited');
 
         $key = implode('-', $pageIDs);

@@ -3,27 +3,29 @@
 namespace Innoweb\Breadcrumbs\Model;
 
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\View\ViewableData;
+use SilverStripe\Model\ModelData;
 
-class Crumb extends ViewableData
+class Crumb extends ModelData
 {
 
     protected $page;
     protected $title;
     protected $link;
 
-    public function __construct($source, $link = null)
+    public static function factory($source, $link = null)
     {
+        $crumb = static::create();
         if (is_a($source, SiteTree::class)) {
-            $this->setPage($source);
+            $crumb->setPage($source);
         } else if (is_string($source)) {
-            $this->setTitle($source);
+            $crumb->setTitle($source);
             if ($link && is_string($link)) {
-                $this->setLink($link);
+                $crumb->setLink($link);
             }
         } else {
             user_error('Invalid Crumb source value');
         }
+        return $crumb;
     }
 
     public function setPage($page)

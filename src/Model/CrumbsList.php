@@ -2,7 +2,7 @@
 
 namespace Innoweb\Breadcrumbs\Model;
 
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 
 class CrumbsList extends ArrayList
 {

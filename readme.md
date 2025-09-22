@@ -9,11 +9,7 @@ Adds configurable and extendable breadcrumbs to the site. Compatible with [Symbi
 
 ## Requirements
 
-SilverStripe CMS 5, see [composer.json](composer.json)
-
-Note: this version is compatible with Silverstripe 5. 
-For Silverstripe 4, please see the [1 release line](https://github.com/xini/silverstripe-breadcrumbs/tree/1).
-
+SilverStripe CMS 6, see [composer.json](composer.json)
 
 ## Installation
 

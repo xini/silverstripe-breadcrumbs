@@ -9,11 +9,14 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Extension;
 use SilverStripe\Core\Manifest\ModuleLoader;
+use Symbiote\Multisites\Control\MultisitesRootController;
+use Symbiote\Multisites\Model\Site;
 
 class SiteTreeExtension extends Extension
 {
     // global settings
     private static $crumbs_include_home = true;
+    
     private static $crumbs_show_hidden = false;
 
     // page settings
@@ -21,14 +24,13 @@ class SiteTreeExtension extends Extension
 
     public function getCrumbsList()
     {
-        $page = $this->owner;
+        $page = $this->getOwner();
         $pages = [];
 
         $includeHome = Config::inst()->get(SiteTreeExtension::class, 'crumbs_include_home');
         $showHidden = Config::inst()->get(SiteTreeExtension::class, 'crumbs_show_hidden');
 
-        if ($page->config()->show_crumbs)
-        {
+        if ($page->config()->show_crumbs) {
             $rootControllerClass = $this->getOwner()->getMultisitesRootControllerClassName();
             if (!empty($rootControllerClass)) {
                 $homeLink = $rootControllerClass::get_homepage_link();
@@ -47,14 +49,16 @@ class SiteTreeExtension extends Extension
                     if ($includeHome) {
                         $pages[] = $page;
                     }
-                } else if ($showHidden || $page->ShowInMenus || ($page->ID === $this->owner->ID)) {
+                } elseif ($showHidden || $page->ShowInMenus || ($page->ID === $this->getOwner()->ID)) {
                     $pages[] = $page;
                 }
+                
                 $siteClass = $this->getOwner()->getMultisitesSiteClassName();
                 if (!empty($siteClass)) {
                     if ($includeHome && $page->ParentID == $page->SiteID && $page->ID !== $homePage->ID) {
                         $pages[] = $homePage;
                     }
+                    
                     $page = $page->ParentID ? $page->Parent() : false;
                     if (is_a($page, $siteClass)) {
                         $page = false;
@@ -63,15 +67,15 @@ class SiteTreeExtension extends Extension
                     if ($includeHome && !$page->ParentID && $page->ID !== $homePage->ID) {
                         $pages[] = $homePage;
                     }
+                    
                     $page = $page->ParentID ? $page->Parent() : false;
                 }
             }
-
         }
 
         $list = CrumbsList::create();
 
-        if (count($pages)) {
+        if ($pages !== []) {
             $pages = array_reverse($pages);
             foreach ($pages as $page) {
                 $crumb = Crumb::factory($page);
@@ -88,11 +92,13 @@ class SiteTreeExtension extends Extension
     {
         $manifest = ModuleLoader::inst()->getManifest();
         if ($manifest->moduleExists('symbiote/silverstripe-multisites')) {
-            return \Symbiote\Multisites\Control\MultisitesRootController::class;
+            return MultisitesRootController::class;
         }
+        
         if ($manifest->moduleExists('fromholdio/silverstripe-configured-multisites')) {
             return \Fromholdio\ConfiguredMultisites\Control\MultisitesRootController::class;
         }
+        
         return null;
     }
 
@@ -100,11 +106,13 @@ class SiteTreeExtension extends Extension
     {
         $manifest = ModuleLoader::inst()->getManifest();
         if ($manifest->moduleExists('symbiote/silverstripe-multisites')) {
-            return \Symbiote\Multisites\Model\Site::class;
+            return Site::class;
         }
+        
         if ($manifest->moduleExists('fromholdio/silverstripe-configured-multisites')) {
             return \Fromholdio\ConfiguredMultisites\Model\Site::class;
         }
+        
         return null;
     }
 
@@ -120,9 +128,10 @@ class SiteTreeExtension extends Extension
         $key .= ($includeHome) ? 'hometrue' : 'homefalse';
         $key .= ($showHidden) ? 'hiddentrue' : 'hiddenfalse';
 
-        if ($this->owner->hasMethod('updateCrumbsCacheKey')) {
-            $key = $this->owner->updateCrumbsCacheKey($key);
+        if ($this->getOwner()->hasMethod('updateCrumbsCacheKey')) {
+            $key = $this->getOwner()->updateCrumbsCacheKey($key);
         }
+        
         return $key;
     }
 }

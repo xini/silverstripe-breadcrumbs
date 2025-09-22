@@ -11,6 +11,7 @@ class CrumbsList extends ArrayList
         if (!is_array($items) || func_num_args() > 1) {
             $items = func_get_args();
         }
+        
         parent::__construct($items);
     }
 
@@ -22,8 +23,10 @@ class CrumbsList extends ArrayList
                 array_splice($this->items, $i, 0, [$item]);
                 return $item;
             }
+            
             $i++;
         }
+        
         return false;
     }
 
@@ -35,8 +38,10 @@ class CrumbsList extends ArrayList
                 array_splice($this->items, $i+1, 0, [$item]);
                 return $item;
             }
+            
             $i++;
         }
+        
         return false;
     }
 
@@ -46,6 +51,7 @@ class CrumbsList extends ArrayList
             foreach ($link as $singleLink) {
                 $this->removeByLink($singleLink);
             }
+            
             return $this;
         }
 

@@ -9,7 +9,9 @@ class Crumb extends ModelData
 {
 
     protected $page;
+    
     protected $title;
+    
     protected $link;
 
     public static function factory($source, $link = null)
@@ -17,7 +19,7 @@ class Crumb extends ModelData
         $crumb = static::create();
         if (is_a($source, SiteTree::class)) {
             $crumb->setPage($source);
-        } else if (is_string($source)) {
+        } elseif (is_string($source)) {
             $crumb->setTitle($source);
             if ($link && is_string($link)) {
                 $crumb->setLink($link);
@@ -25,6 +27,7 @@ class Crumb extends ModelData
         } else {
             user_error('Invalid Crumb source value');
         }
+        
         return $crumb;
     }
 
@@ -52,8 +55,10 @@ class Crumb extends ModelData
             if ($page->hasMethod('getCrumbTitle')) {
                 return $page->getCrumbTitle();
             }
+            
             return $page->MenuTitle ?: $page->Title;
         }
+        
         return $this->title;
     }
 
@@ -70,8 +75,10 @@ class Crumb extends ModelData
             if ($page->hasMethod('getCrumbLink')) {
                 return $page->getCrumbLink();
             }
+            
             return $page->Link();
         }
+        
         return $this->link;
     }
 }

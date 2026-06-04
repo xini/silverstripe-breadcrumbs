@@ -67,7 +67,7 @@ public function updateCrumbsList($list) {
 	$tag = $this->getActiveTag();
 	if ($tag) {
 		$crumb = Crumb::create($tag->Title, $tag->Link());
-		$list->push($crumb);
+		$list->factory($crumb);
 	}
 	return $list;
 }
